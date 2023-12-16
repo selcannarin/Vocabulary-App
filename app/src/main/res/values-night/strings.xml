@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login">Giriş Yap</string>
+    <string name="email_address">Email adresi</string>
+    <string name="password">Parola</string>
+    <string name="remember_me">Beni Hatırla</string>
+    <string name="forget_password">Şifremi Unuttum</string>
+    <string name="register">Kayıt Ol</string>
+    <string name="register_direction_explain">Henüz hesabınız yoksa kayıt olabilirsiniz.</string>
+    <string name="confirm_password">Parolayı Tekrarla</string>
+    <string name="login_direction_explain">Hesabınız varsa giriş yapabilirsiniz.</string>
+    <string name="reset_password">Parolanızı Yenileyin</string>
+    <string name="enter_email_address">Email adresinizi giriniz</string>
+    <string name="send_reset_mail">Gönder</string>
+    <string name="send_reset_mail_explain">Mail adresinize parola yenileme linki gönderilecektir.</string>
+</resources>
