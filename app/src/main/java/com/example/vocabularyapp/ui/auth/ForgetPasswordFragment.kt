@@ -2,20 +2,19 @@ package com.example.vocabularyapp.ui.auth
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.vocabularyapp.MainActivity
-import com.example.vocabularyapp.R
 import com.example.vocabularyapp.databinding.FragmentForgetPasswordBinding
 import com.example.vocabularyapp.utils.AuthEvents
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class ForgetPasswordFragment : Fragment() {
@@ -61,36 +60,39 @@ class ForgetPasswordFragment : Fragment() {
     }
 
     private fun handleEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.allEventsFlow.collect { event ->
-                when (event) {
-                    is AuthEvents.PasswordResetSent -> {
-                        if (event.result) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Şifre sıfırlama e-postası gönderildi",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            findNavController().navigate(R.id.action_forgetPasswordFragment_to_loginFragment)
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Şifre sıfırlama e-postası gönderilemedi",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+        viewModel.allEventsFlow.onEach { event ->
+            when (event) {
+                is AuthEvents.PasswordResetSent -> {
+                    if (event.result) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Parola sıfırlama e-postası gönderildi",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Parola sıfırlama e-postası gönderilemedi",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                }
 
-                    is AuthEvents.Error -> {
-                        Log.e("ForgetPasswordFragment", "Hata: ${event.errorMessage}")
-                        Toast.makeText(requireContext(), event.errorMessage, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    else -> {}
+                is AuthEvents.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Hata: ${event.errorMessage}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                else -> {
+                    Log.e("ForgetPasswordFragment", "Beklenmeyen event: $event")
                 }
             }
-        }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
+
     private fun handleErrors() {
         viewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {

@@ -12,7 +12,7 @@ class AuthRepositoryImpl @Inject constructor(
         fullName: String,
         email: String,
         password: String
-    ): FirebaseUser?{
+    ): FirebaseUser? {
         return dataSource.register(
             fullName,
             email,

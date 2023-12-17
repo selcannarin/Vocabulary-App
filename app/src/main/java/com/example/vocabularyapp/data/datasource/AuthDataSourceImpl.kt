@@ -22,18 +22,15 @@ class AuthDataSourceImpl @Inject constructor(
         password: String
     ): FirebaseUser? {
         return try {
-            // Firebase Authentication ile kullanıcı oluşturma işlemi
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val firebaseUser = authResult.user
 
-            // Firestore'a kullanıcı bilgilerini kaydetme
             if (firebaseUser != null) {
                 saveUser(fullName, email)
             }
 
-            firebaseUser // Oluşturulan kullanıcıyı döndür
+            firebaseUser
         } catch (e: Exception) {
-            // Hata durumunda fırlatılacak istisnalar
             when (e) {
                 is FirebaseAuthWeakPasswordException -> throw Exception("Zayıf şifre, daha güçlü bir şifre seçin.")
                 is FirebaseAuthInvalidCredentialsException -> throw Exception("Geçersiz kimlik bilgileri.")
@@ -46,11 +43,9 @@ class AuthDataSourceImpl @Inject constructor(
 
     override suspend fun signInWithEmailPassword(email: String, password: String): FirebaseUser? {
         return try {
-            // Firebase Authentication ile oturum açma işlemi
             val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            authResult.user // Oturum açılan kullanıcıyı döndür
+            authResult.user
         } catch (e: Exception) {
-            // Hata durumunda fırlatılacak istisnalar
             when (e) {
                 is FirebaseAuthInvalidUserException, is FirebaseAuthInvalidCredentialsException ->
                     throw Exception("Geçersiz e-posta veya şifre.")
@@ -60,7 +55,6 @@ class AuthDataSourceImpl @Inject constructor(
         }
     }
 
-
     override suspend fun saveUser(
         fullName: String,
         email: String
@@ -69,21 +63,17 @@ class AuthDataSourceImpl @Inject constructor(
             val db = firestore
             val user = hashMapOf(
                 "fullName" to fullName
-                // İhtiyaç duyulursa diğer kullanıcı bilgilerini de ekleyebilirsiniz
             )
 
-            // Firestore'da "users" koleksiyonu altında belirli bir belgeye kullanıcı bilgilerini eklemek
             db.collection("users")
-                .document(email) // E-posta adresini belge kimliği olarak kullanabiliriz
+                .document(email)
                 .set(user)
                 .await()
-
-            true // Başarıyla kaydedildiğini belirtmek için true döndürür
+            true
         } catch (e: Exception) {
-            false // Hata durumunda false döndürür
+            false
         }
     }
-
 
     override fun signOut(): FirebaseUser? {
         firebaseAuth.signOut()
@@ -102,6 +92,8 @@ class AuthDataSourceImpl @Inject constructor(
         return try {
             firebaseAuth.sendPasswordResetEmail(email).await()
             true
+        } catch (e: FirebaseAuthInvalidUserException) {
+            false
         } catch (e: Exception) {
             false
         }

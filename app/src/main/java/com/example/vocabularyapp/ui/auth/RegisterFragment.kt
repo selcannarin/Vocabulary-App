@@ -2,11 +2,11 @@ package com.example.vocabularyapp.ui.auth
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,7 +15,6 @@ import com.example.vocabularyapp.R
 import com.example.vocabularyapp.databinding.FragmentRegisterBinding
 import com.example.vocabularyapp.utils.AuthEvents
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -56,16 +55,21 @@ class RegisterFragment : Fragment() {
                 val confirmPassword = etConfirmPassword.text.toString()
 
                 if (name.isEmpty() || surName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                    Toast.makeText(requireContext(), "Lütfen bütün alanları doldurun", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Lütfen bütün alanları doldurun",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
 
                 if (password != confirmPassword) {
-                    Toast.makeText(requireContext(), "Parolalar eşleşmiyor", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Parolalar eşleşmiyor", Toast.LENGTH_SHORT)
+                        .show()
                     return@setOnClickListener
                 }
 
-                val fullName: String = "$name" +"  "+  "$surName"
+                val fullName: String = "$name" + "  " + "$surName"
 
                 viewModel.register(
                     fullName = fullName,
@@ -87,19 +91,29 @@ class RegisterFragment : Fragment() {
                     is AuthEvents.UserRegistered -> {
                         if (event.user != null) {
 
-                            Toast.makeText(requireContext(), "Kullanıcı başarıyla kaydedildi", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Kullanıcı başarıyla kaydedildi",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                             findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
 
                         } else {
-                            Toast.makeText(requireContext(), "Kullanıcı kaydedilemedi", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Kullanıcı kaydedilemedi",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
+
                     is AuthEvents.Error -> {
                         Log.e("RegisterFragment", "Hata: ${event.errorMessage}")
                         Toast.makeText(requireContext(), event.errorMessage, Toast.LENGTH_SHORT)
                             .show()
                     }
+
                     else -> {}
                 }
             }

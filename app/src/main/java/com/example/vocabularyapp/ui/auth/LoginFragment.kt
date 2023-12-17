@@ -2,11 +2,11 @@ package com.example.vocabularyapp.ui.auth
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -14,10 +14,7 @@ import com.example.vocabularyapp.MainActivity
 import com.example.vocabularyapp.R
 import com.example.vocabularyapp.databinding.FragmentLoginBinding
 import com.example.vocabularyapp.utils.AuthEvents
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -55,7 +52,7 @@ class LoginFragment : Fragment() {
                     return@setOnClickListener
                 }
 
-                viewModel.signInWithEmailPassword(email,password)
+                viewModel.signInWithEmailPassword(email, password)
 
             }
 
@@ -66,9 +63,6 @@ class LoginFragment : Fragment() {
             tvForgetPassword.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
             }
-            cbRememberMe.setOnClickListener {
-               // findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-            }
         }
     }
 
@@ -77,14 +71,17 @@ class LoginFragment : Fragment() {
             viewModel.allEventsFlow.collect { event ->
                 when (event) {
                     is AuthEvents.UserSignedIn -> {
-                        Toast.makeText(requireContext(), "Giriş başarılı!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Giriş başarılı!", Toast.LENGTH_SHORT)
+                            .show()
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     }
+
                     is AuthEvents.Error -> {
                         Log.e("LoginFragment", "Hata: ${event.errorMessage}")
                         Toast.makeText(requireContext(), event.errorMessage, Toast.LENGTH_SHORT)
                             .show()
                     }
+
                     else -> {}
                 }
             }
