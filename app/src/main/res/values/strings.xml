@@ -11,8 +11,11 @@
     <string name="register_direction_explain">Henüz hesabınız yoksa kayıt olabilirsiniz.</string>
     <string name="confirm_password">Parolayı Tekrarla</string>
     <string name="login_direction_explain">Hesabınız varsa giriş yapabilirsiniz.</string>
-    <string name="reset_password">Parolanızı Yenileyin</string>
+    <string name="reset_password">Parolanızı \n Yenileyin</string>
     <string name="enter_email_address">Email adresinizi giriniz</string>
     <string name="send_reset_mail">Gönder</string>
     <string name="send_reset_mail_explain">Mail adresinize parola yenileme linki gönderilecektir.</string>
+    <string name="home">Anasayfa</string>
+    <string name="profile">Profil</string>
+    <string name="saved_words">Kelimelerim</string>
 </resources>
