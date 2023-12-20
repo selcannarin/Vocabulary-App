@@ -40,8 +40,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater)
 
@@ -66,13 +65,79 @@ class HomeFragment : Fragment() {
 
     private fun setUpWidgets() {
         binding?.apply {
-            favoriteControl()
+
+            ivFavorite.setOnClickListener {
+                favoriteControl()
+            }
             tvNext.setOnClickListener {
-                viewModel.getRandomeWordFromFirestore()
-                viewModel.randomWord.observe(viewLifecycleOwner) {
-                    currentWord = it
-                    tvTurkishTextView?.text = it?.turkish
-                    tvEnglishTextView?.text = it?.english
+                nextWord()
+            }
+            btnTrue.setOnClickListener {
+                trueControl()
+            }
+            btnFalse.setOnClickListener {
+                falseControl()
+            }
+            btnLearned.setOnClickListener {
+                addToLearnedWords()
+            }
+        }
+    }
+
+    private fun nextWord() {
+        viewModel.getRandomeWordFromFirestore()
+        viewModel.randomWord.observe(viewLifecycleOwner) {
+            currentWord = it
+            tvTurkishTextView?.text = it?.turkish
+            tvEnglishTextView?.text = it?.english
+        }
+    }
+
+    private fun trueControl() {
+        viewModel.addTrueScore()
+        viewModel.addTrueScore.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+
+                is UiState.Success -> {
+                    Toast.makeText(
+                        requireContext(), "Doğru olarak işaretlendi.", Toast.LENGTH_SHORT
+                    ).show()
+                    nextWord()
+                }
+
+                is UiState.Failure -> {
+                    Toast.makeText(
+                        requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+            }
+        }
+    }
+
+    private fun falseControl() {
+        viewModel.addFalseScore()
+        viewModel.addFalseScore.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+
+                is UiState.Success -> {
+                    Toast.makeText(
+                        requireContext(), "Yanlış olarak işaretlendi.", Toast.LENGTH_SHORT
+                    ).show()
+                    nextWord()
+                }
+
+                is UiState.Failure -> {
+                    Toast.makeText(
+                        requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                    ).show()
+
                 }
             }
         }
@@ -80,76 +145,94 @@ class HomeFragment : Fragment() {
 
     private fun favoriteControl() {
         binding?.apply {
-            ivFavorite.setOnClickListener {
 
-                if (!isFavorite) {
-                    viewModel.addToFavorite(currentWord!!.id)
-                    viewModel.addToFavorite.observe(viewLifecycleOwner) {
-                        when (it) {
-                            is UiState.Loading -> {
 
-                            }
+            if (!isFavorite) {
+                viewModel.addToFavorite(currentWord!!.id)
+                viewModel.addToFavorite.observe(viewLifecycleOwner) {
+                    when (it) {
+                        is UiState.Loading -> {
 
-                            is UiState.Success -> {
-                                if (it.data) {
-                                    ivFavorite.setImageResource(R.drawable.ic_favorite_yes)
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Kelime favorilere eklendi.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    isFavorite = true
-                                }
-                            }
+                        }
 
-                            is UiState.Failure -> {
+                        is UiState.Success -> {
+                            if (it.data) {
+                                ivFavorite.setImageResource(R.drawable.ic_favorite_yes)
                                 Toast.makeText(
                                     requireContext(),
-                                    "Bir hata oluştu.",
+                                    "Kelime favorilere eklendi.",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
-
+                                ).show()
+                                isFavorite = true
                             }
                         }
-                    }
-                } else {
-                    viewModel.removeFromFavorite(currentWord!!.id)
-                    viewModel.removeFromFavorite.observe(viewLifecycleOwner) {
-                        when (it) {
-                            is UiState.Loading -> {
 
-                            }
+                        is UiState.Failure -> {
+                            Toast.makeText(
+                                requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                            ).show()
 
-                            is UiState.Success -> {
-                                if (it.data) {
-                                    ivFavorite.setImageResource(R.drawable.ic_favorite)
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Kelime favorilerden çıkarıldı.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    isFavorite = false
-                                }
-                            }
-
-                            is UiState.Failure -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Bir hata oluştu.",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-
-                            }
                         }
                     }
                 }
+            } else {
+                viewModel.removeFromFavorite(currentWord!!.id)
+                viewModel.removeFromFavorite.observe(viewLifecycleOwner) {
+                    when (it) {
+                        is UiState.Loading -> {
 
+                        }
 
+                        is UiState.Success -> {
+                            if (it.data) {
+                                ivFavorite.setImageResource(R.drawable.ic_favorite)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Kelime favorilerden çıkarıldı.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                isFavorite = false
+                            }
+                        }
+
+                        is UiState.Failure -> {
+                            Toast.makeText(
+                                requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+                    }
+                }
             }
+
+
         }
 
+    }
+
+    private fun addToLearnedWords() {
+        viewModel.addLearnedWord(currentWord!!.id)
+        viewModel.addLearnedWord.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+
+                is UiState.Success -> {
+                    Toast.makeText(
+                        requireContext(), "Öğrenilen kelimelere eklendi.", Toast.LENGTH_SHORT
+                    ).show()
+                    nextWord()
+                }
+
+                is UiState.Failure -> {
+                    Toast.makeText(
+                        requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+            }
+        }
     }
 
 

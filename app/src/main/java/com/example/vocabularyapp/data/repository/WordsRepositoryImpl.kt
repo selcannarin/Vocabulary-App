@@ -13,9 +13,10 @@ class WordsRepositoryImpl @Inject constructor(
         return wordsDataSource.getRandomWordFromFirestore()
     }
 
-    override suspend fun getFavoriteWords(): List<Word> {
+    override suspend fun getFavoriteWords(result: (UiState<List<Word>>) -> Unit) {
         TODO("Not yet implemented")
     }
+
 
     override suspend fun addToFavorite(wordId: String, result: (UiState<Boolean>) -> Unit) {
         return wordsDataSource.addToFavorite(wordId, result)
@@ -25,31 +26,36 @@ class WordsRepositoryImpl @Inject constructor(
         return wordsDataSource.removeFromFavorite(wordId, result)
     }
 
-    override suspend fun getTrueScore(): Int {
+    override suspend fun getTrueScore(result: (UiState<Int>) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addTrueScore(): Boolean {
+    override suspend fun addTrueScore(result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.addTrueScore(result)
+    }
+
+    override suspend fun getFalseScore(result: (UiState<Int>) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getFalseScore(): Int {
+    override suspend fun addFalseScore(result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.addFalseScore(result)
+    }
+
+    override suspend fun getLearnedScore(result: (UiState<Int>) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addFalseScore(): Boolean {
+    override suspend fun addLearnedScore(result: (UiState<Boolean>) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getLearnedScore(): Int {
+    override suspend fun getLearnedWords(result: (UiState<List<Word>>) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addLearnedScore(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun addToLearnedWords(wordId: String, result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.addToLearnedWords(wordId, result)
     }
 
-    override suspend fun getLearnedWords(): List<Word> {
-        TODO("Not yet implemented")
-    }
 }

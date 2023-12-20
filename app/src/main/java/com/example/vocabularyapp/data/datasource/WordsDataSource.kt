@@ -6,23 +6,26 @@ import com.example.vocabularyapp.utils.UiState
 interface WordsDataSource {
 
     suspend fun getRandomWordFromFirestore(): UiState<Word?>
-    suspend fun getFavoriteWords(): List<Word>
+
+    suspend fun getFavoriteWords(result: (UiState<List<Word>>) -> Unit)
 
     suspend fun addToFavorite(wordId: String, result: (UiState<Boolean>) -> Unit)
 
     suspend fun removeFromFavorite(wordId: String, result: (UiState<Boolean>) -> Unit)
 
-    suspend fun getTrueScore(): Int
+    suspend fun getTrueScore(result: (UiState<Int>) -> Unit)
 
-    suspend fun addTrueScore(): Boolean
+    suspend fun addTrueScore(result: (UiState<Boolean>) -> Unit)
 
-    suspend fun getFalseScore(): Int
+    suspend fun getFalseScore(result: (UiState<Int>) -> Unit)
 
-    suspend fun addFalseScore(): Boolean
+    suspend fun addFalseScore(result: (UiState<Boolean>) -> Unit)
 
-    suspend fun getLearnedScore(): Int
+    suspend fun getLearnedScore(result: (UiState<Int>) -> Unit)
 
-    suspend fun addLearnedScore(): Boolean
+    suspend fun addLearnedScore(result: (UiState<Boolean>) -> Unit)
 
-    suspend fun getLearnedWords(): List<Word>
+    suspend fun getLearnedWords(result: (UiState<List<Word>>) -> Unit)
+
+    suspend fun addToLearnedWords(wordId: String, result: (UiState<Boolean>) -> Unit)
 }
