@@ -1,31 +1,191 @@
 package com.example.vocabularyapp.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.vocabularyapp.MainActivity
 import com.example.vocabularyapp.R
+import com.example.vocabularyapp.data.model.Word
 import com.example.vocabularyapp.databinding.FragmentHomeBinding
-import com.example.vocabularyapp.databinding.FragmentLoginBinding
+import com.example.vocabularyapp.utils.UiState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding
+    private lateinit var binding: FragmentHomeBinding
+
+    private val viewModel: HomeViewModel by activityViewModels()
+
+    var tvTurkishTextView: TextView? = null
+    var tvEnglishTextView: TextView? = null
+
+    var currentWord: Word? = null
+
+    private var isFavorite = false
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        var tvTurkish = binding.root.findViewById<TextView>(R.id.tvBackTurkish)
+        var tvEnglish = binding.root.findViewById<TextView>(R.id.tvFrontEnglish)
+
+        tvTurkishTextView = tvTurkish
+        tvEnglishTextView = tvEnglish
+        setFlipCard()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater,container,false)
-        (activity as MainActivity).setBottomNavVisibilityVisible()
-        return binding?.root
+        binding = FragmentHomeBinding.inflate(inflater)
+
+        (requireActivity() as MainActivity).setBottomNavVisibilityVisible()
+
+        setUpWidgets()
+
+        return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setFlipCard() {
+        binding.flashCard.setOnClickListener {
+            binding.flashCard.flipTheView()
+        }
+        viewModel.getRandomeWordFromFirestore()
+        viewModel.randomWord.observe(viewLifecycleOwner) {
+            currentWord = it
+            tvTurkishTextView?.text = it?.turkish
+            tvEnglishTextView?.text = it?.english
+        }
     }
+
+    private fun setUpWidgets() {
+        binding?.apply {
+            favoriteControl()
+            tvNext.setOnClickListener {
+                viewModel.getRandomeWordFromFirestore()
+                viewModel.randomWord.observe(viewLifecycleOwner) {
+                    currentWord = it
+                    tvTurkishTextView?.text = it?.turkish
+                    tvEnglishTextView?.text = it?.english
+                }
+            }
+        }
+    }
+
+    private fun favoriteControl() {
+        binding?.apply {
+            ivFavorite.setOnClickListener {
+
+                if (!isFavorite) {
+                    viewModel.addToFavorite(currentWord!!.id)
+                    viewModel.addToFavorite.observe(viewLifecycleOwner) {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+
+                            is UiState.Success -> {
+                                if (it.data) {
+                                    ivFavorite.setImageResource(R.drawable.ic_favorite_yes)
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Kelime favorilere eklendi.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    isFavorite = true
+                                }
+                            }
+
+                            is UiState.Failure -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Bir hata oluştu.",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+
+                            }
+                        }
+                    }
+                } else {
+                    viewModel.removeFromFavorite(currentWord!!.id)
+                    viewModel.removeFromFavorite.observe(viewLifecycleOwner) {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+
+                            is UiState.Success -> {
+                                if (it.data) {
+                                    ivFavorite.setImageResource(R.drawable.ic_favorite)
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Kelime favorilerden çıkarıldı.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    isFavorite = false
+                                }
+                            }
+
+                            is UiState.Failure -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Bir hata oluştu.",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+    }
+
+
+    //Sözcük listesini db ye kaydetme işlemi 1 kez yapıldı
+    /* suspend fun saveWordsToFirestoreFromAssets(context: Context, fileName: String) {
+         val jsonString = loadJSONFromAssets(context, fileName)
+         jsonString?.let {
+             val jsonArray = JSONArray(it)
+
+             for (i in 0 until jsonArray.length()) {
+                 val wordObject = jsonArray.getJSONObject(i)
+                 val english = wordObject.getString("english")
+                 val turkish = wordObject.getString("turkish")
+
+                 val wordData = hashMapOf(
+                     "english" to english,
+                     "turkish" to turkish
+                 )
+
+                 FirebaseFirestore.getInstance().collection("words").add(wordData).await()
+             }
+         }
+     }*/
+
+    /*private fun loadJSONFromAssets(context: Context, fileName: String): String? {
+        return try {
+            val inputStream = context.assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer, Charsets.UTF_8)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
+        }
+    }*/
+
 }
