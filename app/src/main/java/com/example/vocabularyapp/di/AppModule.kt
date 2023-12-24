@@ -2,10 +2,14 @@ package com.example.vocabularyapp.di
 
 import com.example.vocabularyapp.data.datasource.AuthDataSource
 import com.example.vocabularyapp.data.datasource.AuthDataSourceImpl
+import com.example.vocabularyapp.data.datasource.ProfileDataSource
+import com.example.vocabularyapp.data.datasource.ProfileDataSourceImpl
 import com.example.vocabularyapp.data.datasource.WordsDataSource
 import com.example.vocabularyapp.data.datasource.WordsDataSourceImpl
 import com.example.vocabularyapp.data.repository.AuthRepository
 import com.example.vocabularyapp.data.repository.AuthRepositoryImpl
+import com.example.vocabularyapp.data.repository.ProfileRepository
+import com.example.vocabularyapp.data.repository.ProfileRepositoryImpl
 import com.example.vocabularyapp.data.repository.WordsRepository
 import com.example.vocabularyapp.data.repository.WordsRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -52,7 +56,10 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideWordsDataSource(firebaseAuth: FirebaseAuth, firestore: FirebaseFirestore): WordsDataSource {
+    fun provideWordsDataSource(
+        firebaseAuth: FirebaseAuth,
+        firestore: FirebaseFirestore
+    ): WordsDataSource {
         return WordsDataSourceImpl(firebaseAuth, firestore)
     }
 
@@ -62,6 +69,23 @@ object AppModule {
         provideDataSource: WordsDataSource,
     ): WordsRepository {
         return WordsRepositoryImpl(provideDataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileDataSource(
+        firebaseAuth: FirebaseAuth,
+        firestore: FirebaseFirestore
+    ): ProfileDataSource {
+        return ProfileDataSourceImpl(firebaseAuth, firestore)
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileRepository(
+        provideDataSource: ProfileDataSource,
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(provideDataSource)
     }
 
 }
