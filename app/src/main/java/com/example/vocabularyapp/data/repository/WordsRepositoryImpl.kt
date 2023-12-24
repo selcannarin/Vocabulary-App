@@ -14,9 +14,8 @@ class WordsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFavoriteWords(result: (UiState<List<Word>>) -> Unit) {
-        TODO("Not yet implemented")
+        return wordsDataSource.getFavoriteWords(result)
     }
-
 
     override suspend fun addToFavorite(wordId: String, result: (UiState<Boolean>) -> Unit) {
         return wordsDataSource.addToFavorite(wordId, result)
@@ -26,32 +25,24 @@ class WordsRepositoryImpl @Inject constructor(
         return wordsDataSource.removeFromFavorite(wordId, result)
     }
 
-    override suspend fun getTrueScore(result: (UiState<Int>) -> Unit) {
-        TODO("Not yet implemented")
+    override suspend fun isFavorite(wordId: String, result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.isFavorite(wordId, result)
     }
 
     override suspend fun addTrueScore(result: (UiState<Boolean>) -> Unit) {
         return wordsDataSource.addTrueScore(result)
     }
 
-    override suspend fun getFalseScore(result: (UiState<Int>) -> Unit) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun addFalseScore(result: (UiState<Boolean>) -> Unit) {
         return wordsDataSource.addFalseScore(result)
     }
 
-    override suspend fun getLearnedScore(result: (UiState<Int>) -> Unit) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun addLearnedScore(result: (UiState<Boolean>) -> Unit) {
-        TODO("Not yet implemented")
+        return wordsDataSource.addLearnedScore(result)
     }
 
     override suspend fun getLearnedWords(result: (UiState<List<Word>>) -> Unit) {
-        TODO("Not yet implemented")
+        return wordsDataSource.getLearnedWords(result)
     }
 
     override suspend fun addToLearnedWords(wordId: String, result: (UiState<Boolean>) -> Unit) {

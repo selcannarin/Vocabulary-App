@@ -57,9 +57,36 @@ class HomeFragment : Fragment() {
         }
         viewModel.getRandomeWordFromFirestore()
         viewModel.randomWord.observe(viewLifecycleOwner) {
+
             currentWord = it
             tvTurkishTextView?.text = it?.turkish
             tvEnglishTextView?.text = it?.english
+
+            viewModel.isFavorite(it?.id!!)
+            viewModel.isFavorite.observe(viewLifecycleOwner) {
+                when (it) {
+                    is UiState.Loading -> {}
+
+                    is UiState.Success -> {
+                        if (it.data) {
+                            binding.ivFavorite.setImageResource(R.drawable.ic_favorite_yes)
+                            isFavorite = true
+                        } else {
+                            binding.ivFavorite.setImageResource(R.drawable.ic_favorite)
+                            isFavorite = false
+                        }
+                    }
+
+                    is UiState.Failure -> {
+                        Toast.makeText(
+                            requireContext(), "Bir hata oluştu.", Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+
+            }
+
         }
     }
 
@@ -146,7 +173,6 @@ class HomeFragment : Fragment() {
     private fun favoriteControl() {
         binding?.apply {
 
-
             if (!isFavorite) {
                 viewModel.addToFavorite(currentWord!!.id)
                 viewModel.addToFavorite.observe(viewLifecycleOwner) {
@@ -222,6 +248,7 @@ class HomeFragment : Fragment() {
                     Toast.makeText(
                         requireContext(), "Öğrenilen kelimelere eklendi.", Toast.LENGTH_SHORT
                     ).show()
+                    viewModel.addLearnedScore()
                     nextWord()
                 }
 
@@ -236,7 +263,10 @@ class HomeFragment : Fragment() {
     }
 
 
+
     //Sözcük listesini db ye kaydetme işlemi 1 kez yapıldı
+
+
     /* suspend fun saveWordsToFirestoreFromAssets(context: Context, fileName: String) {
          val jsonString = loadJSONFromAssets(context, fileName)
          jsonString?.let {

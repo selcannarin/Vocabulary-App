@@ -35,9 +35,25 @@ class HomeViewModel @Inject constructor(private val wordsRepository: WordsReposi
     val addFalseScore: LiveData<UiState<Boolean>>
         get() = _addFalseScore
 
+    private val _addLearnedScore = MutableLiveData<UiState<Boolean>>()
+    val addLearnedScore: LiveData<UiState<Boolean>>
+        get() = _addLearnedScore
+
     private val _addLearnedWord = MutableLiveData<UiState<Boolean>>()
     val addLearnedWord: LiveData<UiState<Boolean>>
         get() = _addLearnedWord
+
+    private val _getFavorites = MutableLiveData<UiState<List<Word>>>()
+    val getFavorites: LiveData<UiState<List<Word>>>
+        get() = _getFavorites
+
+    private val _getLearnedWords = MutableLiveData<UiState<List<Word>>>()
+    val getLearnedWords: LiveData<UiState<List<Word>>>
+        get() = _getLearnedWords
+
+    private val _isFavorite = MutableLiveData<UiState<Boolean>>()
+    val isFavorite: LiveData<UiState<Boolean>>
+        get() = _isFavorite
 
     fun addToFavorite(wordId: String) = viewModelScope.launch {
         _addToFavorite.value = UiState.Loading
@@ -67,9 +83,29 @@ class HomeViewModel @Inject constructor(private val wordsRepository: WordsReposi
         wordsRepository.addFalseScore { _addFalseScore.value = it }
     }
 
+    fun addLearnedScore() = viewModelScope.launch {
+        _addLearnedScore.value = UiState.Loading
+        wordsRepository.addLearnedScore { _addLearnedScore.value = it }
+    }
+
     fun addLearnedWord(wordId: String) = viewModelScope.launch {
         _addLearnedWord.value = UiState.Loading
         wordsRepository.addToLearnedWords(wordId) { _addLearnedWord.value = it }
+    }
+
+    fun getFavorites() = viewModelScope.launch {
+        _getFavorites.value = UiState.Loading
+        wordsRepository.getFavoriteWords { _getFavorites.value = it }
+    }
+
+    fun getLearnedWords() = viewModelScope.launch {
+        _getLearnedWords.value = UiState.Loading
+        wordsRepository.getLearnedWords { _getLearnedWords.value = it }
+    }
+
+    fun isFavorite(wordId: String) = viewModelScope.launch {
+        _isFavorite.value = UiState.Loading
+        wordsRepository.isFavorite(wordId) { _isFavorite.value = it }
     }
 
 }
