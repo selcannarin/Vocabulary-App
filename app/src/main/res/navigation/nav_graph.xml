@@ -50,10 +50,26 @@
         android:id="@+id/profileFragment"
         android:name="com.example.vocabularyapp.ui.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/savedWordsFragment"
         android:name="com.example.vocabularyapp.ui.savedwords.SavedWordsFragment"
         android:label="fragment_saved_words"
         tools:layout="@layout/fragment_saved_words" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.vocabularyapp.ui.profile.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>
