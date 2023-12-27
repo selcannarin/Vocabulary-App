@@ -9,7 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.vocabularyapp.MainActivity
+import com.example.vocabularyapp.R
 import com.example.vocabularyapp.databinding.FragmentForgetPasswordBinding
 import com.example.vocabularyapp.utils.AuthEvents
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,15 +68,17 @@ class ForgetPasswordFragment : Fragment() {
                     if (event.result) {
                         Toast.makeText(
                             requireContext(),
-                            "Parola sıfırlama e-postası gönderildi",
+                            "Eğer böyle bir e-posta adresi kayıtlıysa, parola sıfırlama e-postası gönderildi",
                             Toast.LENGTH_SHORT
                         ).show()
+                        findNavController().navigate(R.id.action_forgetPasswordFragment_to_loginFragment)
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Parola sıfırlama e-postası gönderilemedi",
+                            "Eğer böyle bir e-posta adresi kayıtlıysa, parola sıfırlama e-postası gönderildi",
                             Toast.LENGTH_SHORT
                         ).show()
+                        findNavController().navigate(R.id.action_forgetPasswordFragment_to_loginFragment)
                     }
                 }
 
