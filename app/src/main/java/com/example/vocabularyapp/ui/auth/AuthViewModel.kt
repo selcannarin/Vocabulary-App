@@ -44,12 +44,6 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     val allEventsFlow = eventsChannel.receiveAsFlow()
 
 
-    fun saveUser(fullName: String, email: String) {
-        viewModelScope.launch {
-            val result = authRepository.saveUser(fullName, email)
-        }
-    }
-
     fun signOut() {
         _currentUser.value = null
         authRepository.signOut()
