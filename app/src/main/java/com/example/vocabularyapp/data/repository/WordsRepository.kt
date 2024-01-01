@@ -24,4 +24,12 @@ interface WordsRepository {
     suspend fun getLearnedWords(result: (UiState<List<Word>>) -> Unit)
 
     suspend fun addToLearnedWords(wordId: String, result: (UiState<Boolean>) -> Unit)
+
+    suspend fun getAllWords(result: (UiState<List<Word>>) -> Unit)
+
+    suspend fun addWord(word: Word, result: (UiState<Boolean>) -> Unit)
+
+    suspend fun deleteWord(wordId: String, result: (UiState<Boolean>) -> Unit)
+
+    suspend fun updateWord(word: Word, result: (UiState<Boolean>) -> Unit)
 }

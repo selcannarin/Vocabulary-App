@@ -54,7 +54,14 @@ class LoginFragment : Fragment() {
                     return@setOnClickListener
                 }
 
-                viewModel.signInWithEmailPassword(email, password)
+                if(email == "admin" && password == "123456"){
+                    findNavController().navigate(R.id.action_loginFragment_to_adminFragment)
+                }
+                else{
+                    viewModel.signInWithEmailPassword(email, password)
+                }
+
+
 
             }
 

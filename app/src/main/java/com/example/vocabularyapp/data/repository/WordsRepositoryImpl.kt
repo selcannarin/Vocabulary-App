@@ -49,4 +49,20 @@ class WordsRepositoryImpl @Inject constructor(
         return wordsDataSource.addToLearnedWords(wordId, result)
     }
 
+    override suspend fun getAllWords(result: (UiState<List<Word>>) -> Unit) {
+        return wordsDataSource.getAllWords(result)
+    }
+
+    override suspend fun addWord(word: Word, result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.addWord(word, result)
+    }
+
+    override suspend fun deleteWord(wordId: String, result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.deleteWord(wordId, result)
+    }
+
+    override suspend fun updateWord(word: Word, result: (UiState<Boolean>) -> Unit) {
+        return wordsDataSource.updateWord(word, result)
+    }
+
 }

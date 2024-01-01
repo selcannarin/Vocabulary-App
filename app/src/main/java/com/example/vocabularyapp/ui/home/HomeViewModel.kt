@@ -55,6 +55,22 @@ class HomeViewModel @Inject constructor(private val wordsRepository: WordsReposi
     val isFavorite: LiveData<UiState<Boolean>>
         get() = _isFavorite
 
+    private val _getAllWords = MutableLiveData<UiState<List<Word>>>()
+    val getAllWords: LiveData<UiState<List<Word>>>
+        get() = _getAllWords
+
+    private val _addWord = MutableLiveData<UiState<Boolean>>()
+    val addWord: LiveData<UiState<Boolean>>
+        get() = _addWord
+
+    private val _deleteWord = MutableLiveData<UiState<Boolean>>()
+    val deleteWord: LiveData<UiState<Boolean>>
+        get() = _deleteWord
+
+    private val _updateWord = MutableLiveData<UiState<Boolean>>()
+    val updateWord: LiveData<UiState<Boolean>>
+        get() = _updateWord
+
     fun addToFavorite(wordId: String) = viewModelScope.launch {
         _addToFavorite.value = UiState.Loading
         wordsRepository.addToFavorite(wordId) { _addToFavorite.value = it }
@@ -106,6 +122,26 @@ class HomeViewModel @Inject constructor(private val wordsRepository: WordsReposi
     fun isFavorite(wordId: String) = viewModelScope.launch {
         _isFavorite.value = UiState.Loading
         wordsRepository.isFavorite(wordId) { _isFavorite.value = it }
+    }
+
+    fun getAllWords() = viewModelScope.launch {
+        _getAllWords.value = UiState.Loading
+        wordsRepository.getAllWords { _getAllWords.value = it }
+    }
+
+    fun addWord(word: Word) = viewModelScope.launch {
+        _addWord.value = UiState.Loading
+        wordsRepository.addWord(word) { _addWord.value = it }
+    }
+
+    fun deleteWord(wordId: String) = viewModelScope.launch {
+        _deleteWord.value = UiState.Loading
+        wordsRepository.deleteWord(wordId) { _deleteWord.value = it }
+    }
+
+    fun updateWord(word: Word) = viewModelScope.launch {
+        _updateWord.value = UiState.Loading
+        wordsRepository.updateWord(word) { _updateWord.value = it }
     }
 
 }

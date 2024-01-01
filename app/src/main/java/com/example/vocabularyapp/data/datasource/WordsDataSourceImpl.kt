@@ -322,4 +322,74 @@ class WordsDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllWords(result: (UiState<List<Word>>) -> Unit) {
+        try {
+            val documents = firestore.collection("words").get().await()
+
+            if (documents.isEmpty) {
+                result(UiState.Failure("No documents found"))
+            } else {
+                val wordList = mutableListOf<Word>()
+
+                documents.forEach { document ->
+                    val id = document.id
+                    val turkish = document.getString("turkish") ?: ""
+                    val english = document.getString("english") ?: ""
+
+                    wordList.add(Word(id, english, turkish))
+                }
+
+                result(UiState.Success(wordList))
+            }
+        } catch (e: Exception) {
+            result(UiState.Failure("Error: ${e.message}"))
+        }
+    }
+
+    override suspend fun addWord(word: Word, result: (UiState<Boolean>) -> Unit) {
+        try {
+            val wordMap = hashMapOf(
+                "english" to word.english,
+                "turkish" to word.turkish
+            )
+
+            firestore.collection("words").add(wordMap).addOnSuccessListener {
+                result(UiState.Success(true))
+            }.addOnFailureListener {
+                result(UiState.Failure("Kelime eklenirken bir hata oluştu: ${it.message}"))
+            }
+        } catch (e: Exception) {
+            result(UiState.Failure("Beklenmeyen bir hata oluştu: ${e.message}"))
+        }
+    }
+
+    override suspend fun deleteWord(wordId: String, result: (UiState<Boolean>) -> Unit) {
+        try {
+            firestore.collection("words").document(wordId).delete().addOnSuccessListener {
+                result(UiState.Success(true))
+            }.addOnFailureListener {
+                result(UiState.Failure("Kelime silinirken bir hata oluştu: ${it.message}"))
+            }
+        } catch (e: Exception) {
+            result(UiState.Failure("Beklenmeyen bir hata oluştu: ${e.message}"))
+        }
+    }
+
+    override suspend fun updateWord(word: Word, result: (UiState<Boolean>) -> Unit) {
+        try {
+            val wordMap = hashMapOf(
+                "english" to word.english,
+                "turkish" to word.turkish
+            )
+
+            firestore.collection("words").document(word.id).update(wordMap as Map<String, Any>).addOnSuccessListener {
+                result(UiState.Success(true))
+            }.addOnFailureListener {
+                result(UiState.Failure("Kelime güncellenirken bir hata oluştu: ${it.message}"))
+            }
+        } catch (e: Exception) {
+            result(UiState.Failure("Beklenmeyen bir hata oluştu: ${e.message}"))
+        }
+    }
+
 }
