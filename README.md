@@ -45,3 +45,8 @@ Clone the repo
 git clone https://github.com/selcannarin/Vocabulary-App.git
 ```
 
+Admin girişi için:
+Kullanıcı adı olarak admin,
+Şifre olarak 123456 yı kullanabilirsiniz.
+
+
